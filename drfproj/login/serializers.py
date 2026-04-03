@@ -2,17 +2,32 @@ from rest_framework import serializers
 from .models import User, reports, Subject, SubjectScore
 
 
+class ReportSerializer(serializers.ModelSerializer):
+    scores = serializers.SerializerMethodField()
+
+    class Meta:
+        model = reports
+        fields = ['id', 'name', 'class_name', 'total_score', 'percentage', 'created_at', 'scores']
+
+    def get_scores(self, obj):
+        return [
+            {'subject': s.subject.name, 'score': s.score}
+            for s in obj.scores.select_related('subject').all()
+        ]
+
+
 class UserSerializer(serializers.ModelSerializer):
     user_type_display = serializers.CharField(source='get_user_type_display', read_only=True)
     password = serializers.CharField(write_only=True, required=True)
     username = serializers.CharField(required=False, allow_blank=True)
+    reports = ReportSerializer(many=True, read_only=True, source='reports_set')
 
     class Meta:
         model = User
         fields = [
             'id', 'email', 'username',
             'user_type', 'user_type_display',
-            'password', 'profile_picture', 'is_verified',
+            'password', 'profile_picture', 'is_verified', 'reports',
         ]
         read_only_fields = ['id', 'is_verified']
 

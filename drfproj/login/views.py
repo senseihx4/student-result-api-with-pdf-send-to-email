@@ -1,4 +1,5 @@
 import io
+from rest_framework import filters
 
 from django.http import FileResponse
 from reportlab.pdfgen import canvas
@@ -17,6 +18,10 @@ from .serializers import UserSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.exceptions import ValidationError
 from .serializers import checkresultserializer, otpserializer, UploadScoreSerializer
+from django_filters.rest_framework import DjangoFilterBackend
+import django_filters
+from rest_framework import generics
+
 
 
 class userviewset(viewsets.ModelViewSet):
@@ -274,3 +279,29 @@ class GeneratePDF(viewsets.ViewSet):
 
         buffer.seek(0)
         return FileResponse(buffer, as_attachment=True, filename='report.pdf', content_type='application/pdf')
+
+
+
+
+
+
+
+class UserList(generics.ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = {
+        'username': ['icontains', 'exact'],
+        
+    }
+    search_fields = ['username', 'email', 'reports__scores__subject__name']
+    
+
+
+
+
+
+
+
+
+

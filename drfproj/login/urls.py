@@ -17,4 +17,6 @@ urlpatterns = [
     path('api/check-result/<int:pk>/', views.checkresultviewset.as_view({'put': 'update', 'delete': 'destroy'}), name='check-result-detail'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/user/', views.UserList.as_view(), name='user-list'),
+  
 ]
