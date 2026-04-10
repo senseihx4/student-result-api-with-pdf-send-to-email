@@ -4,7 +4,7 @@ A production-style REST API built with **Django REST Framework** that automatica
 
 ---
 
-## ✨ Features
+## ✨ Features 
 
 - 🔗 Full REST API with Django REST Framework
 - 📄 Auto-generates formatted PDF result cards per student
